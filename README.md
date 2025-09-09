@@ -46,63 +46,6 @@
 
 > ⚠️ **주의**: 레벨이 올라갈수록 장애물 속도와 생성 빈도가 급격히 증가합니다!
 
-## 🛠️ 기술 스택
-
-- **Frontend**: Next.js 14 + React 18 + TypeScript
-- **Styling**: CSS-in-JS (인라인 스타일)
-- **아키텍처**: 레이어드 아키텍처 (Presentation, Application, Domain, Infrastructure)
-- **디자인 패턴**: Singleton, Observer, Factory, Strategy
-- **원칙**: SOLID 원칙 적용
-
-## 🚀 실행 방법
-
-### 개발 환경 실행
-```bash
-# 의존성 설치
-npm install
-
-# 개발 서버 시작
-npm run dev
-```
-
-### 프로덕션 빌드
-```bash
-# 프로덕션 빌드
-npm run build
-
-# 프로덕션 서버 시작
-npm start
-```
-
-## 📁 프로젝트 구조
-
-```
-src/
-├── app/                    # Next.js App Router
-│   ├── page.tsx           # 메인 페이지
-│   ├── layout.tsx         # 루트 레이아웃
-│   └── globals.css        # 전역 스타일
-├── components/            # Presentation Layer
-│   ├── Character.tsx      # 캐릭터 컴포넌트
-│   ├── Obstacle.tsx      # 장애물 컴포넌트
-│   ├── GameArea.tsx      # 게임 영역
-│   ├── GameUI.tsx        # 게임 UI
-│   ├── GameControls.tsx  # 게임 컨트롤
-│   └── GamePage.tsx      # 메인 게임 페이지
-├── models/               # Domain Layer
-│   ├── Character.ts      # 캐릭터 모델
-│   ├── Obstacle.ts       # 장애물 모델
-│   └── LevelingService.ts # 레벨링 서비스
-├── services/             # Application Layer
-│   └── GameService.ts    # 게임 서비스 (Singleton)
-├── utils/                # Infrastructure Layer
-│   ├── constants.ts      # 게임 상수
-│   └── utils.ts          # 유틸리티 함수
-└── public/              # 정적 자산
-    ├── luffy.png         # 루피 이미지
-    └── akainu.png        # 아카이누 이미지
-```
-
 ## 🎨 게임 화면
 
 ### 시작 화면
@@ -156,6 +99,223 @@ src/
 
 게임을 플레이하며 최고 점수를 달성해보세요! 최고 점수는 브라우저 로컬 스토리지에 자동 저장됩니다.
 
----
+
+## 💻 싱글톤 프롬프트
+
+이 프로젝트는 싱글톤 프롬프트를 작성하여 바이브 코딩으로 개발되었습니다.
+
+```
+루피 도지 게임 개발 (Next.js + TypeScript + 아키텍처)
+
+1. 프로젝트 초기 설정
+
+- Next.js 14 + TypeScript + React 18 프로젝트 생성
+- App Router 사용 (src/app 구조)
+- ESLint + Prettier 설정
+- Tailwind CSS 또는 CSS-in-JS 스타일링
+
+2. 폴더 구조 (레이어드 아키텍처)
+
+src/
+├── app/
+│ ├── page.tsx (메인 페이지)
+│ ├── game/page.tsx (게임 페이지)
+│ ├── layout.tsx
+│ └── globals.css
+├── components/ (Presentation Layer)
+│ ├── Character.tsx
+│ ├── Obstacle.tsx
+│ ├── GameArea.tsx
+│ ├── GameUI.tsx
+│ ├── GameControls.tsx
+│ └── GamePage.tsx
+├── models/ (Domain Layer)
+│ ├── Character.ts
+│ ├── Obstacle.ts
+│ ├── CollisionDetector.ts
+│ └── LevelingService.ts
+├── services/ (Application Layer)
+│ ├── GameService.ts (Singleton)
+│ ├── ScoreManager.ts
+│ ├── TimerManager.ts
+│ └── InputHandler.ts (Strategy)
+├── utils/ (Infrastructure Layer)
+│ ├── constants.ts
+│ ├── utils.ts
+│ └── AssetLoader.ts (Factory)
+└── types/
+└── game.ts
+
+3. 디자인 패턴 적용
+
+- Singleton: GameService (게임 상태 중앙 관리)
+- Observer: 게임 상태 변경 알림 시스템
+- Factory: ObstacleModel 생성
+- Strategy: InputHandler (마우스/터치 입력 처리)
+
+4. SOLID 원칙 적용
+
+- SRP: 각 클래스는 단일 책임
+- OCP: 확장에는 열려있고 수정에는 닫혀있음
+- LSP: 인터페이스 구현체는 대체 가능
+- ISP: 인터페이스 분리 원칙
+- DIP: 의존성 역전 원칙
+
+5. TypeScript 타입 정의
+
+types/game.ts
+export interface Position {
+  x: number;
+  y: number;
+}
+
+export interface Size {
+  width: number;
+  height: number;
+}
+
+export interface GameObject {
+  id: string;
+  position: Position;
+  size: Size;
+}
+
+export interface Character extends GameObject {
+  speed: number;
+  isMoving: boolean;
+  direction: 'left' | 'right';
+}
+
+export interface Obstacle extends GameObject {
+  speed: number;
+  isActive: boolean;
+}
+
+export interface GameData {
+  score: number;
+  time: number;
+  level: number;
+  isGameOver: boolean;
+  isPaused: boolean;
+}
+
+6. 핵심 요구사항
+
+- 안정적인 시선 시스템: 캐릭터 이동 방향에 따라 일관되고 안정적인 시선 변경
+- 마우스 포인터 숨김: 게임 화면에서 마우스 포인터 완전 제거
+- 레벨 표시 개선: 게임 오버 시 "숫자(계급)" 형태로 레벨 표시
+- 지수적 난이도 증가: 레벨업 시마다 속도와 생성 간격이 2배씩 증가
+- 높은 기본 난이도: 레벨 1부터 기본 속도의 2배로 시작
+
+7. 시선 시스템 요구사항
+
+- 정확한 방향 감지: 마우스 위치와 캐릭터 중심점 비교로 정확한 방향 판단
+- 일관된 시선 변경: 이동할 때마다 항상 올바른 방향으로 시선 변경
+- 부드러운 애니메이션: 시선 변경 시 자연스러운 전환 효과
+- 임계값 설정: 작은 움직임은 무시하고 명확한 방향 변경만 반영
+- 시선 방향: 왼쪽으로 이동하면 오른쪽을 보고, 오른쪽으로 이동하면 왼쪽을 봄
+
+8. 마우스 포인터 처리
+
+- 게임 영역에서 숨김: 게임 진행 중 마우스 포인터 완전 제거
+- CSS 처리: cursor: none 적용
+- 게임 오버 시 복원: 게임 오버 화면에서는 마우스 포인터 표시
+
+9. 레벨 시스템 개선
+
+- 레벨 1: 기본 속도 × 2, 기본 간격 ÷ 2
+- 레벨 2: 기본 속도 × 4, 기본 간격 ÷ 4
+- 레벨 3: 기본 속도 × 8, 기본 간격 ÷ 8
+- 레벨 4: 기본 속도 × 16, 기본 간격 ÷ 16
+- 레벨 5: 기본 속도 × 32, 기본 간격 ÷ 32
+
+10. 게임 오버 화면 개선
+
+- 레벨 표시: "5(해적왕)" 형태로 표시
+- 계급 정보: 레벨 번호와 함께 해당 계급명 표시
+- 시각적 개선: 레벨 정보를 더 명확하게 표시
+
+11. 기술적 구현
+
+11.1. 시선 시스템 수정
+
+models/Character.ts
+export class CharacterModel implements Character {
+  public direction: 'left' | 'right' = 'right';
+
+  public moveTo(targetX: number): void {
+    const clampedX = clamp(targetX, this.size.width / 2, GAME_WIDTH - this.size.width / 2);
+
+    const previousX = this.position.x;
+    const directionThreshold = 5;
+
+    if (Math.abs(clampedX - previousX) > directionThreshold) {
+      this.direction = clampedX < previousX ? 'right' : 'left';
+    }
+
+    this.position.x = clampedX;
+    this.isMoving = true;
+  }
+}
+
+11.2. 마우스 포인터 숨김
+
+.game-area {
+  cursor: none;
+}
+
+.game-over-screen {
+  cursor: default;
+}
+
+11.3. 지수적 난이도 시스템
+
+models/LevelingService.ts
+export class LevelingService {
+  public getLevelInfo(level: number): { speed: number; spawnInterval: number; description: string } {
+    const baseSpeed = 4;
+    const baseInterval = 1500;
+    const multiplier = Math.pow(2, level - 1);
+
+    return {
+      speed: baseSpeed * multiplier,
+      spawnInterval: Math.max(200, baseInterval / multiplier),
+      description: this.getLevelDescription(level)
+    };
+  }
+}
+
+11.4. Singleton 패턴 적용
+
+services/GameService.ts
+export class GameService {
+  private static instance: GameService;
+
+  public static getInstance(): GameService {
+    if (!GameService.instance) {
+      GameService.instance = new GameService();
+    }
+    return GameService.instance;
+  }
+}
+
+12. 필수 검증 사항
+
+- 캐릭터가 왼쪽으로 이동할 때 항상 오른쪽을 바라봄
+- 캐릭터가 오른쪽으로 이동할 때 항상 왼쪽을 바라봄
+- 게임 화면에서 마우스 포인터가 보이지 않음
+- 게임 오버 시 레벨이 "숫자(계급)" 형태로 표시됨
+- 레벨업 시마다 속도와 생성 간격이 정확히 2배씩 증가
+- 레벨 1부터 기본 속도의 2배로 시작
+
+13. 구현 우선순위
+
+1. 1단계: Next.js 프로젝트 생성 및 기본 설정
+2. 2단계: 폴더 구조 및 타입 정의
+3. 3단계: 기본 컴포넌트 구조 생성
+4. 4단계: 게임 로직 및 서비스 구현
+5. 5단계: 시선 시스템 및 난이도 시스템 구현
+6. 6단계: UI/UX 개선 및 최종 테스트
+```
 
 **원피스의 세계에서 루피와 함께 해적왕의 꿈을 향해 도전하세요!** 🏴‍☠️
